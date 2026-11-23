@@ -177,7 +177,7 @@ function addTask(taskData = {}) {
     createdAt: new Date().toISOString()
   };
 
-  if (!newTask.petId || !newTask.title || !newTask.date) {
+  if (!newTask.petId || !newTask.title || !newTask.date || !getPetById(newTask.petId)) {
     return null;
   }
 

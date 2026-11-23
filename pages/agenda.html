@@ -37,19 +37,20 @@
                 <section class="task-form-section">
                     <h2>Agregar cuidado</h2>
 
+                    <p id="task-pet-help" hidden>Para agendar un cuidado, <a href="./mascotas.html">registrá una mascota</a>.</p>
                     <form id="task-form">
                         <fieldset>
                             <legend>Informaci&oacute;n de la tarea</legend>
 
-                            <label for="task-pet">Mascota</label>
+                            <label for="task-pet">Mascota (obligatorio)</label>
 
-                            <select id="task-pet">
+                            <select id="task-pet" required>
                                 <option value="">Seleccionar mascota</option>
                             </select>
 
-                            <label for="task-title">T&iacute;tulo</label>
+                            <label for="task-title">T&iacute;tulo (obligatorio)</label>
 
-                            <input id="task-title" type="text" placeholder="Ej: Vacuna antirr&aacute;bica">
+                            <input id="task-title" type="text" required placeholder="Ej: Vacuna antirr&aacute;bica">
 
                             <label for="task-description">
                                 Descripci&oacute;n
@@ -57,9 +58,9 @@
 
                             <textarea id="task-description" placeholder="Describe el cuidado..."></textarea>
 
-                            <label for="task-date">Fecha</label>
+                            <label for="task-date">Fecha (obligatorio)</label>
 
-                            <input id="task-date" type="date">
+                            <input id="task-date" type="date" required>
 
                             <label for="task-time">Hora</label>
 
@@ -71,30 +72,30 @@
                         </button>
                     </form>
 
-                    <p id="task-message"></p>
+                    <p id="task-message" role="status" aria-atomic="true"></p>
                 </section>
 
                 <section class="filters-section">
                     <h2>Filtrar tareas</h2>
 
                     <nav class="filters">
-                        <button data-filter="all">
+                        <button type="button" data-filter="all" aria-pressed="true">
                             Todas
                         </button>
 
-                        <button data-filter="overdue">
+                        <button type="button" data-filter="overdue" aria-pressed="false">
                             Vencidas
                         </button>
 
-                        <button data-filter="today">
+                        <button type="button" data-filter="today" aria-pressed="false">
                             Hoy
                         </button>
 
-                        <button data-filter="upcoming">
+                        <button type="button" data-filter="upcoming" aria-pressed="false">
                             Pr&oacute;ximas
                         </button>
 
-                        <button data-filter="done">
+                        <button type="button" data-filter="done" aria-pressed="false">
                             Realizadas
                         </button>
                     </nav>
