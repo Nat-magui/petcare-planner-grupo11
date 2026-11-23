@@ -34,6 +34,14 @@ function renderPetOptions() {
   }
 
   const pets = getPets();
+  const petHelp = document.getElementById("task-pet-help");
+  const submitButton = taskForm?.querySelector('button[type="submit"]');
+  const hasPets = pets.length > 0;
+
+  if (petHelp) petHelp.hidden = hasPets;
+  if (submitButton) submitButton.disabled = !hasPets;
+  taskPet.disabled = !hasPets;
+
   const options = pets.map((pet) => {
     return `<option value="${escapeHTML(pet.id)}">${escapeHTML(pet.name)}</option>`;
   });
@@ -102,6 +110,9 @@ function renderTasks(filter = currentFilter) {
   }
 
   currentFilter = filter;
+  filterButtons.forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.filter === currentFilter));
+  });
 
   const tasks = sortTasksByDate(getTasks());
   const filteredTasks = getFilteredTasks(tasks, filter);
@@ -129,6 +140,17 @@ function handleTaskSubmit(event) {
 
   if (!taskData.petId || !cleanText(taskData.title) || !taskData.date) {
     showTaskMessage("Completá los campos obligatorios.", "overdue");
+    return;
+  }
+
+  if (!getPetById(taskData.petId)) {
+    renderPetOptions();
+    showTaskMessage("La mascota seleccionada ya no está disponible.", "overdue");
+    if (taskPet.disabled) {
+      document.querySelector("#task-pet-help a")?.focus();
+    } else {
+      taskPet.focus();
+    }
     return;
   }
 
@@ -179,7 +201,16 @@ if (tasksList) {
     const button = event.target.closest("[data-done]");
 
     if (button) {
-      handleMarkTaskAsDone(button.dataset.done);
+      const taskId = button.dataset.done;
+      handleMarkTaskAsDone(taskId);
+
+      if (!button.isConnected) {
+        const taskCard = document.getElementById(`task-${taskId}`);
+        const activeFilter = Array.from(filterButtons).find((filterButton) => {
+          return filterButton.dataset.filter === currentFilter;
+        });
+        (taskCard ?? activeFilter)?.focus();
+      }
     }
   });
 }
