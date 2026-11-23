@@ -1311,7 +1311,7 @@ async function handlePetSubmit(event) {
     const updatedPet = updatePet(existingPet.id, petData);
 
     if (!updatedPet) {
-      showPetMessage("No se pudieron guardar los cambios. Revisá los datos.", "error");
+      showPetMessage("No se pudieron guardar los cambios en este navegador. Volvé a intentar.", "error");
       return;
     }
 
@@ -1325,7 +1325,7 @@ async function handlePetSubmit(event) {
   const newPet = addPet(petData);
 
   if (!newPet) {
-    showPetMessage("No se pudo guardar la mascota. Revisá los datos.", "error");
+    showPetMessage("No se pudo guardar la mascota en este navegador. Volvé a intentar.", "error");
     return;
   }
 
