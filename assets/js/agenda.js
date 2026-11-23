@@ -73,7 +73,7 @@ function renderTaskCard(task) {
     : "";
 
   return `
-    <article class="card task-card">
+    <article class="card task-card" id="task-${escapeHTML(task.id)}" tabindex="-1">
       <header class="task-card-header">
         <section>
           <h3>${escapeHTML(task.title)}</h3>
@@ -186,3 +186,8 @@ if (tasksList) {
 
 renderPetOptions();
 renderTasks();
+
+const linkedTaskId = new URLSearchParams(window.location.search).get("tarea");
+if (linkedTaskId && tasksList) {
+  document.getElementById(`task-${linkedTaskId}`)?.focus();
+}
