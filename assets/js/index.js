@@ -177,8 +177,12 @@ function createUpcomingTaskElement(task, pets) {
         '<p class="task-card__meta"></p>' +
         '<span class="badge ' + status.badgeClass + '">' + getBadgeEmoji(status.key) + ' ' + status.label + '</span>' +
       '</div>' +
-      '<a class="task-link" href="#" aria-label="Ver detalle de la tarea">›</a>' +
+      '<a class="task-link" href="./pages/agenda.html" aria-label="Ver tarea en Agenda">›</a>' +
     '</article>';
+  const taskLink = li.querySelector('.task-link');
+  const taskQuery = new URLSearchParams({ tarea: task.id });
+  taskLink.href = './pages/agenda.html?' + taskQuery;
+
   li.querySelector('.task-card__title').textContent = task.title;
   li.querySelector('.task-card__meta').textContent = [petName, species, dateDisplay, timeDisplay].join(' • ');
   li.querySelector('.task-avatar__fallback').textContent = getTaskIconFallback(task.title);
@@ -190,7 +194,7 @@ function createUpcomingTaskElement(task, pets) {
 function getDashboardTasks(tasks, limit) {
   var overdue = getOverdueTasksFromList(tasks);
   var today = getTodayTasksFromList(tasks);
-  var upcoming = getUpcomingTasksFromList(tasks, 10);
+  var upcoming = getTasksByVisualStatus(tasks, 'upcoming');
 
   overdue = sortTasksByDate(overdue);
   today = sortTasksByDate(today);
