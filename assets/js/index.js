@@ -54,11 +54,23 @@ function resolveAssetPath(assetPath) {
   return './' + assetPath;
 }
 
-function renderOptionalImage(assetPath, className, altText, isLazy) {
-  var resolvedPath = resolveAssetPath(assetPath);
-  if (!resolvedPath) return '';
-  var lazyAttr = isLazy !== false ? ' loading="lazy"' : '';
-  return '<img class="' + className + '" src="' + resolvedPath + '" alt="' + (altText || '') + '"' + lazyAttr + ' onload="this.closest(\'.pet-avatar, .task-avatar\')?.classList.add(\'has-image\')" onerror="this.hidden = true; this.closest(\'.pet-avatar, .task-avatar\')?.classList.remove(\'has-image\')" />';
+function prependOptionalImage(avatar, assetPath, className, altText, isLazy = true) {
+  const resolvedPath = resolveAssetPath(assetPath);
+  if (!resolvedPath) return;
+
+  const image = document.createElement('img');
+  image.className = className;
+  image.alt = altText;
+  if (isLazy) image.loading = 'lazy';
+
+  image.addEventListener('load', () => avatar.classList.add('has-image'));
+  image.addEventListener('error', () => {
+    image.hidden = true;
+    avatar.classList.remove('has-image');
+  });
+
+  image.src = resolvedPath;
+  avatar.prepend(image);
 }
 
 function renderUserProfile() {
@@ -98,14 +110,6 @@ function getTaskIconKey(title) {
   if (t.indexOf('control') !== -1 || t.indexOf('veterin') !== -1) return 'vet';
   if (t.indexOf('medic') !== -1 || t.indexOf('pastilla') !== -1) return 'medicine';
   return '';
-}
-
-function renderTaskIcon(title) {
-  var iconKey = getTaskIconKey(title);
-  var iconAsset = iconKey ? TASK_ICON_ASSETS[iconKey] : '';
-  var fallback = getTaskIconFallback(title);
-  var imgHtml = iconAsset ? renderOptionalImage(iconAsset, 'task-avatar__image', '', true) : '';
-  return imgHtml + '<span class="task-avatar__fallback" aria-hidden="true">' + fallback + '</span>';
 }
 
 var TIPS = [
@@ -162,22 +166,23 @@ function createUpcomingTaskElement(task, pets) {
   var species = pet ? pet.species : '';
   var dateDisplay = formatDateToDisplay(task.date);
   var timeDisplay = formatTimeToDisplay(task.time);
-  var taskIconHtml = renderTaskIcon(task.title);
+  var taskIcon = TASK_ICON_ASSETS[getTaskIconKey(task.title)];
 
   var li = document.createElement('li');
   li.innerHTML =
     '<article class="task-card">' +
-      '<span class="task-avatar" aria-hidden="true">' + taskIconHtml + '</span>' +
+      '<span class="task-avatar" aria-hidden="true"><span class="task-avatar__fallback"></span></span>' +
       '<div class="task-card__body">' +
-        '<h3 class="task-card__title">' + task.title + '</h3>' +
-        '<p class="task-card__meta">' +
-          petName + ' • ' + species + ' • ' +
-          dateDisplay + ' • ' + timeDisplay +
-        '</p>' +
+        '<h3 class="task-card__title"></h3>' +
+        '<p class="task-card__meta"></p>' +
         '<span class="badge ' + status.badgeClass + '">' + getBadgeEmoji(status.key) + ' ' + status.label + '</span>' +
       '</div>' +
       '<a class="task-link" href="#" aria-label="Ver detalle de la tarea">›</a>' +
     '</article>';
+  li.querySelector('.task-card__title').textContent = task.title;
+  li.querySelector('.task-card__meta').textContent = [petName, species, dateDisplay, timeDisplay].join(' • ');
+  li.querySelector('.task-avatar__fallback').textContent = getTaskIconFallback(task.title);
+  prependOptionalImage(li.querySelector('.task-avatar'), taskIcon, 'task-avatar__image', '');
   return li;
 }
 
@@ -234,21 +239,24 @@ function renderPets(pets) {
     var emoji = getEmojiForSpecies(pet.species);
     var age = pet.age || 'Edad no especificada';
     var petImage = getPetImage(pet);
-    var imgHtml = renderOptionalImage(petImage, 'pet-avatar__image', 'Foto de ' + pet.name, true);
-    var hiddenAttr = petImage ? '' : ' aria-hidden="true"';
 
     var li = document.createElement('li');
     li.className = 'pet-mini-card';
     li.innerHTML =
-      '<span class="pet-avatar"' + hiddenAttr + '>' +
-        imgHtml +
+      '<span class="pet-avatar">' +
         '<span class="pet-avatar__fallback" aria-hidden="true">' + emoji + '</span>' +
       '</span>' +
       '<div class="pet-info">' +
-        '<p class="pet-name">' + pet.name + '</p>' +
-        '<p class="pet-specie">' + pet.species + '</p>' +
-        '<p class="pet-meta">' + age + '</p>' +
+        '<p class="pet-name"></p>' +
+        '<p class="pet-specie"></p>' +
+        '<p class="pet-meta"></p>' +
       '</div>';
+    li.querySelector('.pet-name').textContent = pet.name;
+    li.querySelector('.pet-specie').textContent = pet.species;
+    li.querySelector('.pet-meta').textContent = age;
+    const avatar = li.querySelector('.pet-avatar');
+    if (!petImage) avatar.setAttribute('aria-hidden', 'true');
+    prependOptionalImage(avatar, petImage, 'pet-avatar__image', 'Foto de ' + pet.name);
     fragment.appendChild(li);
   }
   container.appendChild(fragment);
