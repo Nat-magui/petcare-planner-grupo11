@@ -50,8 +50,10 @@ function getFromStorage(key) {
 function saveToStorage(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
+    return true;
   } catch (error) {
     console.error(`Error al guardar ${key} en localStorage`, error);
+    return false;
   }
 }
 
@@ -64,7 +66,7 @@ function getPets() {
 }
 
 function savePets(pets) {
-  saveToStorage(STORAGE_KEYS.PETS, pets);
+  return saveToStorage(STORAGE_KEYS.PETS, pets);
 }
 
 function normalizePetStorageData(petData = {}, existingPet = {}) {
@@ -100,9 +102,7 @@ function addPet(petData = {}) {
   }
 
   pets.push(newPet);
-  savePets(pets);
-
-  return newPet;
+  return savePets(pets) ? newPet : null;
 }
 
 function getPetById(petId) {
@@ -137,9 +137,7 @@ function updatePet(petId, updatedData = {}) {
     return null;
   }
 
-  savePets(updatedPets);
-
-  return updatedPet;
+  return savePets(updatedPets) ? updatedPet : null;
 }
 
 function deletePet(petId) {
@@ -162,7 +160,7 @@ function getTasks() {
 }
 
 function saveTasks(tasks) {
-  saveToStorage(STORAGE_KEYS.TASKS, tasks);
+  return saveToStorage(STORAGE_KEYS.TASKS, tasks);
 }
 
 function addTask(taskData = {}) {
@@ -184,9 +182,7 @@ function addTask(taskData = {}) {
   }
 
   tasks.push(newTask);
-  saveTasks(tasks);
-
-  return newTask;
+  return saveTasks(tasks) ? newTask : null;
 }
 
 function getTaskById(taskId) {
@@ -231,9 +227,7 @@ function updateTask(taskId, updatedData = {}) {
     return null;
   }
 
-  saveTasks(updatedTasks);
-
-  return updatedTask;
+  return saveTasks(updatedTasks) ? updatedTask : null;
 }
 
 function markTaskAsDone(taskId) {
@@ -262,10 +256,10 @@ function deleteTask(taskId) {
 ===================================================== */
 
 function seedInitialData() {
-  const pets = getPets();
-  const tasks = getTasks();
+  const hasStoredPets = localStorage.getItem(STORAGE_KEYS.PETS) !== null;
+  const hasStoredTasks = localStorage.getItem(STORAGE_KEYS.TASKS) !== null;
 
-  if (pets.length > 0 || tasks.length > 0) {
+  if (hasStoredPets || hasStoredTasks) {
     return;
   }
 

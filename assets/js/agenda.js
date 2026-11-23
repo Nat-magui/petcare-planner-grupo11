@@ -127,10 +127,15 @@ function handleTaskSubmit(event) {
     status: "pending"
   };
 
+  if (!taskData.petId || !cleanText(taskData.title) || !taskData.date) {
+    showTaskMessage("Completá los campos obligatorios.", "overdue");
+    return;
+  }
+
   const createdTask = addTask(taskData);
 
   if (!createdTask) {
-    showTaskMessage("Completa los campos obligatorios.", "overdue");
+    showTaskMessage("No se pudo guardar la tarea en este navegador. Volvé a intentar.", "overdue");
     return;
   }
 
