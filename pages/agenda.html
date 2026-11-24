@@ -24,85 +24,63 @@
         </header>
 
         <main id="main-content" class="app-container">
-            <div>
-                <section class="agenda-intro">
-                    <h2>Agenda de cuidados</h2>
+            <header class="panel agenda-intro">
+                <h1>Agenda de cuidados</h1>
+                <p>Organizá vacunas, paseos y otros cuidados de tus mascotas.</p>
+            </header>
 
-                    <p>
-                        Organiza vacunas, paseos, comidas y cuidados importantes
-                        para tus mascotas.
+            <div class="agenda-workspace">
+                <section class="card task-form-section" aria-labelledby="task-form-title">
+                    <h2 id="task-form-title">Agregar cuidado</h2>
+                    <p id="task-pet-help" class="alert alert-info" hidden>
+                        Para agendar un cuidado, <a href="./mascotas.html">registrá una mascota</a>.
                     </p>
-                </section>
 
-                <section class="task-form-section">
-                    <h2>Agregar cuidado</h2>
-
-                    <p id="task-pet-help" hidden>Para agendar un cuidado, <a href="./mascotas.html">registrá una mascota</a>.</p>
-                    <form id="task-form">
-                        <fieldset>
-                            <legend>Informaci&oacute;n de la tarea</legend>
-
-                            <label for="task-pet">Mascota (obligatorio)</label>
-
-                            <select id="task-pet" required>
+                    <form id="task-form" class="form">
+                        <div class="form-group">
+                            <label class="form-label" for="task-pet">Mascota (obligatorio)</label>
+                            <select class="form-select" id="task-pet" required>
                                 <option value="">Seleccionar mascota</option>
                             </select>
+                        </div>
 
-                            <label for="task-title">T&iacute;tulo (obligatorio)</label>
+                        <div class="form-group">
+                            <label class="form-label" for="task-title">Título (obligatorio)</label>
+                            <input class="form-input" id="task-title" type="text" required placeholder="Ej. Vacuna antirrábica">
+                        </div>
 
-                            <input id="task-title" type="text" required placeholder="Ej: Vacuna antirr&aacute;bica">
+                        <div class="agenda-schedule">
+                            <div class="form-group">
+                                <label class="form-label" for="task-date">Fecha (obligatorio)</label>
+                                <input class="form-input" id="task-date" type="date" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="task-time">Hora</label>
+                                <input class="form-input" id="task-time" type="time">
+                            </div>
+                        </div>
 
-                            <label for="task-description">
-                                Descripci&oacute;n
-                            </label>
+                        <div class="form-group">
+                            <label class="form-label" for="task-description">Descripción</label>
+                            <textarea class="form-textarea" id="task-description"></textarea>
+                        </div>
 
-                            <textarea id="task-description" placeholder="Describe el cuidado..."></textarea>
-
-                            <label for="task-date">Fecha (obligatorio)</label>
-
-                            <input id="task-date" type="date" required>
-
-                            <label for="task-time">Hora</label>
-
-                            <input id="task-time" type="time">
-                        </fieldset>
-
-                        <button type="submit">
-                            Guardar cuidado
-                        </button>
+                        <button class="btn btn-primary" type="submit">Guardar cuidado</button>
                     </form>
 
                     <p id="task-message" role="status" aria-atomic="true"></p>
                 </section>
 
-                <section class="filters-section">
-                    <h2>Filtrar tareas</h2>
-
-                    <nav class="filters">
-                        <button type="button" data-filter="all" aria-pressed="true">
-                            Todas
-                        </button>
-
-                        <button type="button" data-filter="overdue" aria-pressed="false">
-                            Vencidas
-                        </button>
-
-                        <button type="button" data-filter="today" aria-pressed="false">
-                            Hoy
-                        </button>
-
-                        <button type="button" data-filter="upcoming" aria-pressed="false">
-                            Pr&oacute;ximas
-                        </button>
-
-                        <button type="button" data-filter="done" aria-pressed="false">
-                            Realizadas
-                        </button>
-                    </nav>
-                </section>
-
-                <section id="tasks-list">
-                    <h2>Listado de tareas</h2>
+                <section class="agenda-tasks" aria-labelledby="agenda-tasks-title">
+                    <h2 id="agenda-tasks-title">Cuidados agendados</h2>
+                    <div class="agenda-filters" role="group" aria-label="Filtrar cuidados por estado">
+                        <button class="chip" type="button" data-filter="all" aria-pressed="true">Todas</button>
+                        <button class="chip" type="button" data-filter="overdue" aria-pressed="false">Vencidas</button>
+                        <button class="chip" type="button" data-filter="today" aria-pressed="false">Hoy</button>
+                        <button class="chip" type="button" data-filter="upcoming" aria-pressed="false">Próximas</button>
+                        <button class="chip" type="button" data-filter="done" aria-pressed="false">Realizadas</button>
+                    </div>
+                    <div id="tasks-list"></div>
                 </section>
             </div>
         </main>
