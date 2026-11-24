@@ -62,7 +62,10 @@
                             <textarea class="form-textarea" id="task-description"></textarea>
                         </div>
 
-                        <button class="btn btn-primary" type="submit">Guardar cuidado</button>
+                        <div class="card-actions">
+                            <button id="task-submit" class="btn btn-primary" type="submit">Guardar cuidado</button>
+                            <button id="task-cancel-edit" class="btn btn-secondary" type="button" hidden>Cancelar edición</button>
+                        </div>
                     </form>
 
                     <p id="task-message" role="status" aria-atomic="true"></p>

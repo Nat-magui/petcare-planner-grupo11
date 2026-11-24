@@ -115,7 +115,17 @@
 
 .task-card-actions {
     display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
     justify-content: flex-end;
+}
+
+#task-form .card-actions {
+    margin-top: 0;
+}
+
+#task-cancel-edit[hidden] {
+    display: none;
 }
 
 .agenda-empty {
