@@ -1,8 +1,8 @@
 # PetCare Planner
 
-Aplicación web para registrar mascotas, agendar sus cuidados y marcar tareas como realizadas. Proyecto grupal de IntegrarTEC, Equipo 11.
+Aplicación web para registrar mascotas y gestionar sus cuidados. Desde cada ficha se puede consultar el historial y abrir una agenda filtrada por mascota. Proyecto grupal de IntegrarTEC, Equipo 11.
 
-[Probar la demo local](#9-demo-local) · [Ver mi aporte](#mi-aporte) · [Repositorio original](https://github.com/slaguirre1809-hash/petcare-planner-grupo11)
+[Abrir demo pública](https://petcare-planner-grupo11.vercel.app/) · [Probar en local](#9-demo-local) · [Ver mi aporte](#mi-aporte) · [Repositorio original](https://github.com/slaguirre1809-hash/petcare-planner-grupo11)
 
 ---
 
@@ -17,7 +17,7 @@ Aplicación web para registrar mascotas, agendar sus cuidados y marcar tareas co
 - [7. Arquitectura y organización del código](#7-arquitectura-y-organización-del-código)
 - [8. Cómo probar la Agenda](#8-cómo-probar-la-agenda)
 - [9. Demo local](#9-demo-local)
-- [10. Deploy en Vercel](#10-deploy-en-vercel)
+- [10. Demo publicada y capturas](#10-demo-publicada-y-capturas)
 - [11. Persistencia de datos](#11-persistencia-de-datos)
 - [12. Estado del proyecto / alcance MVP](#12-estado-del-proyecto--alcance-mvp)
 - [13. Uso de IA](#13-uso-de-ia)
@@ -68,7 +68,10 @@ Me encargué de la sección **Mascotas**. También trabajé en la navegación co
 - [Ajustes del pie de página](https://github.com/Nat-magui/petcare-planner-grupo11/commit/bbfd4de79c)
 - [Integración de la entrega grupal](https://github.com/Nat-magui/petcare-planner-grupo11/commit/2a5d875ac8)
 
-En este fork también corregí el manejo de fallos de persistencia, la presentación de texto ingresado y el listado de tareas de Inicio. Mejoré la validación y el uso con teclado en Agenda.
+En este fork unifiqué el cálculo de estados y la navegación, mejoré el guardado de mascotas y la accesibilidad de los formularios, e incorporé el historial y la agenda por mascota. También agregué la edición y reapertura de cuidados.
+
+- [Historial y agenda por mascota](https://github.com/Nat-magui/petcare-planner-grupo11/pull/14)
+- [Edición y reapertura de cuidados](https://github.com/Nat-magui/petcare-planner-grupo11/pull/15)
 
 ---
 
@@ -87,14 +90,16 @@ En este fork también corregí el manejo de fallos de persistencia, la presentac
 - Registro de una o varias mascotas.
 - Perfil por mascota con datos básicos y de salud.
 - Edición de información de mascota.
+- Historial de cuidados con enlaces a sus tarjetas en Agenda.
 
 ### 5.2 Agenda centralizada
 - Alta de tareas de cuidado con fecha obligatoria y hora opcional.
 - Asociación de cada tarea a una mascota.
+- Agenda filtrada desde la ficha, con la mascota preseleccionada en el formulario.
 
 ### 5.3 Seguimiento de tareas
-- Marcado de tareas como realizadas.
-- Separación visual de tareas activas y completadas.
+- Edición de los datos de un cuidado con su estado actual.
+- Marcado como realizada y opción de volver a pendiente.
 
 ### 5.4 Filtros por estado
 - Agenda incluye los filtros **Todas**, **Vencidas**, **Hoy**, **Próximas** y **Realizadas**.
@@ -157,11 +162,12 @@ petcare-planner-grupo11/
 
 ## 8. Cómo probar la Agenda
 
-1. En **Mascotas**, agregá una mascota llamada **Bruma** y guardala.
-2. En **Agenda**, seleccioná **Bruma** y creá **Control veterinario** con la fecha de hoy. La hora es opcional.
-3. Recargá la página y elegí **Hoy**. La tarea debe conservar su título, fecha y mascota.
-4. Elegí **Marcar realizada**. La tarea debe salir de **Hoy** y aparecer en **Realizadas**.
-5. Recargá, aplicá **Realizadas** otra vez y confirmá que la tarea sigue ahí. En **Inicio**, el contador de realizadas debe reflejar el cambio.
+1. En **Mascotas**, agregá una mascota llamada **Bruma**.
+2. Desde su ficha, elegí **Ver agenda de Bruma**. La agenda muestra sus cuidados y preselecciona a Bruma en el formulario.
+3. Creá **Control veterinario** con la fecha de hoy. Elegí **Editar**, cambiá el título a **Control anual** y guardá. Después de recargar, debe seguir habiendo una sola tarea con el título actualizado.
+4. Elegí **Marcar realizada**, abrí el filtro **Realizadas** y verificá que la tarea aparezca allí.
+5. Elegí **Volver a pendiente**. Recargá y comprobá que la tarea aparezca en **Hoy** y que el contador de Inicio refleje el cambio.
+6. Volvé a **Mascotas → Bruma → Historial**. Confirmá que aparece el cuidado y que **Ver en Agenda** abre su tarjeta.
 
 ## 9. Demo local
 
@@ -177,23 +183,13 @@ Abrí la URL que muestra el comando. También podés abrir `index.html` con **Li
 
 ---
 
-## 10. Deploy en Vercel
+## 10. Demo publicada y capturas
 
-### Requisitos
-- Cuenta en [Vercel](https://vercel.com/).
-- Repositorio en GitHub.
+[Abrir PetCare Planner en Vercel](https://petcare-planner-grupo11.vercel.app/).
 
-### Pasos
-1. Subir proyecto a GitHub.
-2. En Vercel: **Add New Project**.
-3. Importar repositorio.
-4. Framework preset: **Other**.
-5. Build command: *(vacío)*.
-6. Output directory: *(vacío, root estático)*.
-7. Deploy.
-
-### Configuración recomendada
-Como es una app estática, no requiere variables de entorno ni build pipeline.
+| Inicio | Mascotas | Agenda |
+| --- | --- | --- |
+| ![Inicio con resumen y cuidados por atender](docs/capturas/inicio.jpg) | ![Ficha de Kira con resumen de cuidados](docs/capturas/mascotas.jpg) | ![Formulario de edición junto al listado de cuidados](docs/capturas/agenda.jpg) |
 
 ---
 
@@ -209,8 +205,8 @@ La aplicación funciona sin backend. Los datos no se sincronizan entre navegador
 
 ✅ Incluido en MVP:
 - Gestión básica de mascotas.
-- Agenda con creación y seguimiento de tareas.
-- Filtros por estado.
+- Agenda con creación, edición y reapertura de cuidados.
+- Historial por mascota y filtros combinables por mascota y estado.
 - UI responsive (desktop + mobile).
 
 🚧 Fuera de alcance actual (futuro):
@@ -229,6 +225,7 @@ El [informe de uso de IA](docs/informe-ia.md) documenta el apoyo de estas herram
 
 - [Fork de Magalí](https://github.com/Nat-magui/petcare-planner-grupo11)
 - [Repositorio original del Equipo 11](https://github.com/slaguirre1809-hash/petcare-planner-grupo11)
+- [Demo pública en Vercel](https://petcare-planner-grupo11.vercel.app/)
 - [Demo local](#9-demo-local)
 
 ---
