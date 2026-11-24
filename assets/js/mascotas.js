@@ -43,6 +43,8 @@ const petMessageElement = document.getElementById("pet-message");
 
 let selectedPetId = null;
 let editingPetId = null;
+let petImageRevision = 0;
+let isSavingPet = false;
 
 const MAX_PET_IMAGE_SIZE = 1024 * 1024;
 
@@ -889,6 +891,7 @@ function resetPetFormMode() {
 }
 
 function clearPetForm() {
+  petImageRevision += 1;
   petFormElement.reset();
   petImageInput.value = "";
   clearPetImagePreview();
@@ -929,6 +932,7 @@ function fillPetForm(pet) {
   petClinicInput.value = details.clinic === "A completar" ? "" : details.clinic;
   petAllergiesInput.value = details.allergies === "Sin alergias registradas" ? "" : details.allergies;
   petNotesInput.value = details.notes === "Sin notas cargadas" ? "" : details.notes;
+  petImageRevision += 1;
   petImageInput.value = "";
   const previewSource = getPetImagePreviewSource(getPetImage(pet));
 
@@ -1099,17 +1103,24 @@ function readPetImageFile(file) {
 }
 
 async function handlePetImageChange() {
-  if (!petImageInput.files || petImageInput.files.length === 0) {
+  const revision = ++petImageRevision;
+  const file = petImageInput.files?.[0];
+
+  if (!file) {
     clearPetImagePreview();
     return;
   }
 
   try {
-    const previewImage = await readPetImageFile(petImageInput.files[0]);
+    const previewImage = await readPetImageFile(file);
+    if (revision !== petImageRevision) return;
+
     showPetImagePreview(previewImage, "Nueva foto seleccionada");
     petMessageElement.textContent = "";
     petMessageElement.className = "form-help";
   } catch (error) {
+    if (revision !== petImageRevision) return;
+
     showPetMessage(error.message, "error");
     petImageInput.value = "";
     clearPetImagePreview();
@@ -1245,6 +1256,7 @@ function validatePetFormData() {
 
 async function handlePetSubmit(event) {
   event.preventDefault();
+  if (isSavingPet) return;
 
   const existingPet = editingPetId ? getPetById(editingPetId) : null;
 
@@ -1254,8 +1266,6 @@ async function handlePetSubmit(event) {
     return;
   }
 
-  const isEditing = Boolean(editingPetId && existingPet);
-  let imageValue = isEditing ? existingPet.image || "" : "";
   const formValidation = validatePetFormData();
 
   if (!formValidation.isValid) {
@@ -1264,67 +1274,59 @@ async function handlePetSubmit(event) {
     return;
   }
 
-  try {
-    const newImage = await readPetImageFile(petImageInput.files[0]);
-
-    if (newImage) {
-      imageValue = newImage;
-    }
-  } catch (error) {
-    showPetMessage(error.message, "error");
-    petImageInput.focus();
-    return;
-  }
-
   const petData = getPetFormPayload(
-    imageValue,
+    existingPet?.image || "",
     formValidation.ageValidation,
     formValidation.weight
   );
+  const file = petImageInput.files?.[0];
 
-  if (isEditing) {
-    const updatedPet = updatePet(existingPet.id, petData);
+  isSavingPet = true;
+  petFormSubmitElement.disabled = true;
+  petFormElement.inert = true;
 
-    if (!updatedPet) {
-      showPetMessage("No se pudieron guardar los cambios en este navegador. Volvé a intentar.", "error");
+  try {
+    try {
+      const newImage = await readPetImageFile(file);
+      if (newImage) petData.image = newImage;
+    } catch (error) {
+      showPetMessage(error.message, "error");
+      petFormElement.inert = false;
+      petImageInput.focus();
+      return;
+    }
+
+    const savedPet = existingPet ? updatePet(existingPet.id, petData) : addPet(petData);
+
+    if (!savedPet) {
+      const action = existingPet ? "guardar los cambios" : "guardar la mascota";
+      showPetMessage(`No se pudo ${action} en este navegador. Volvé a intentar.`, "error");
       return;
     }
 
     clearPetForm();
     resetPetFormMode();
-    selectPet(updatedPet.id);
-    showPetMessage(`Mascota "${displayText(updatedPet.name)}" actualizada correctamente.`);
-    return;
+    selectPet(savedPet.id);
+    const result = existingPet ? "actualizada" : "agregada";
+    showPetMessage(`Mascota "${displayText(savedPet.name)}" ${result} correctamente.`);
+  } finally {
+    petFormElement.inert = false;
+    petFormSubmitElement.disabled = false;
+    isSavingPet = false;
   }
-
-  const newPet = addPet(petData);
-
-  if (!newPet) {
-    showPetMessage("No se pudo guardar la mascota en este navegador. Volvé a intentar.", "error");
-    return;
-  }
-
-  clearPetForm();
-  resetPetFormMode();
-  selectPet(newPet.id);
-  showPetMessage(`Mascota "${displayText(newPet.name)}" agregada correctamente.`);
 }
 
 function handlePetsListClick(event) {
   const petButton = event.target.closest("[data-pet-id]");
-  const openFormButton = event.target.closest("[data-open-pet-form]");
 
-  if (openFormButton) {
-    openPetFormForCreate();
-    return;
-  }
-
-  if (petButton) {
+  if (petButton && !isSavingPet) {
     selectPet(petButton.dataset.petId);
   }
 }
 
 function handlePageClick(event) {
+  if (isSavingPet) return;
+
   if (event.target.closest("[data-open-pet-form]")) {
     openPetFormForCreate();
   }
