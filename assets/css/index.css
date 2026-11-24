@@ -346,6 +346,7 @@ body {
 }
 
 .pet-add-card {
+  text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -566,37 +567,6 @@ body {
   width: 100%;
 }
 
-.notification-btn {
-  position: relative;
-  width: 2.75rem;
-  height: 2.75rem;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  color: var(--pet-muted);
-  font-size: 1.55rem;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-.notification-btn .lucide {
-  display: block;
-}
-.notification-btn span {
-  position: absolute;
-  top: 0.15rem;
-  right: 0.1rem;
-  width: 1.2rem;
-  height: 1.2rem;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--pet-purple);
-  color: #ffffff;
-  font-size: 0.7rem;
-  font-weight: 900;
-}
-
 .aside-top-actions {
   display: flex;
   align-items: center;
@@ -604,7 +574,7 @@ body {
   margin-left: auto;
 }
 
-.user-profile-btn {
+.user-profile {
   display: flex;
   align-items: center;
   gap: 0.65rem;
@@ -615,21 +585,9 @@ body {
   border-radius: 999px;
 
   background: #ffffff;
-
-  cursor: pointer;
-
-  transition:
-    background-color 0.2s,
-    border-color 0.2s,
-    transform 0.2s;
 }
 
-.user-profile-btn:hover {
-  background: #f8fafc;
-  border-color: #d8dce2;
-}
-
-.user-profile-btn__avatar {
+.user-profile__avatar {
   width: 2.4rem;
   height: 2.4rem;
 
@@ -639,23 +597,17 @@ body {
   flex-shrink: 0;
 }
 
-.user-profile-btn__avatar img {
+.user-profile__avatar img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.user-profile-btn__name {
+.user-profile__name {
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--pet-text);
-}
-
-.user-profile-btn__arrow {
-  width: 1rem;
-  height: 1rem;
-  color: var(--pet-muted);
 }
 
 

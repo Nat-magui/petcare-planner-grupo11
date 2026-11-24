@@ -18,34 +18,14 @@
     <header class="app-container app-topbar index-topbar">
       <div data-layout-brand></div>
 
-      <nav class="aside-top-actions" aria-label="Accesos rápidos">
-
-  <button
-    class="notification-btn notification-btn--desktop"
-    type="button"
-    aria-label="3 recordatorios pendientes"
-  >
-    <i data-lucide="bell" aria-hidden="true"></i>
-    <span>3</span>
-  </button>
-
-  <button
-    class="user-profile-btn"
-    type="button"
-    aria-label="Perfil de usuario"
-  >
-    <span class="user-profile-btn__avatar">
-      <img id="user-avatar" src="./assets/img/users/default-user.png" alt="Foto de perfil" >
-    </span>
-
-    <span id="user-name" class="user-profile-btn__name">
-      Usuario
-    </span>
-
-    <i data-lucide="chevron-down" aria-hidden="true"></i>
-  </button>
-
-</nav>
+      <div class="aside-top-actions">
+        <div class="user-profile">
+          <span class="user-profile__avatar">
+            <img id="user-avatar" src="./assets/img/users/default-user.png" alt="">
+          </span>
+          <span id="user-name" class="user-profile__name">Cuidador</span>
+        </div>
+      </div>
 
     </header>
 
@@ -66,10 +46,10 @@
       <section class="dashboard-section highlight-block" aria-labelledby="highlight-title">
         <header class="highlight-block__content">
           <h2 id="highlight-title" class="section-title">Tus mascotas, siempre al día ❤️</h2>
-          <p class="highlight-block__subtitle">Planificá sus cuidados, recibí recordatorios y disfrutá más tiempo juntos.</p>
+          <p class="highlight-block__subtitle">Agendá sus cuidados y seguí cuáles quedan pendientes.</p>
         </header>
         <nav class="highlight-buttons" aria-label="Acciones rápidas">
-          <a class="btn btn-primary" href="./pages/agenda.html">+ Nueva tarea</a>
+          <a class="btn btn-primary" href="./pages/agenda.html?accion=nueva">+ Nueva tarea</a>
           <a class="btn btn-secondary" href="./pages/agenda.html">Ver agenda →</a>
         </nav>
       </section>
@@ -120,10 +100,10 @@
           <a class="section-link" href="./pages/mascotas.html" aria-label="Ver todas las mascotas">Ver todas</a>
         </header>
         <ul id="pets-list-container" class="pets-list-grid"><!-- Render dinámico --></ul>
-        <button class="pet-add-card" type="button" data-open-pet-form>
+        <a class="pet-add-card" href="./pages/mascotas.html?accion=agregar">
           <span class="pet-add-card__icon" aria-hidden="true">+</span>
           <span class="pet-add-card__text">Agregar mascota</span>
-        </button>
+        </a>
       </section>
     </main>
 

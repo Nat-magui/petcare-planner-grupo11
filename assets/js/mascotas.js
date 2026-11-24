@@ -1386,6 +1386,10 @@ function initMascotasPage() {
   setupEventListeners();
   updatePetTip();
   renderLucideIcons();
+
+  if (new URLSearchParams(window.location.search).get("accion") === "agregar") {
+    openPetFormForCreate();
+  }
 }
 
 initMascotasPage();
