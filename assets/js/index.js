@@ -133,20 +133,17 @@ function updateTipOfTheDay() {
 }
 
 function renderStats(tasks) {
-  var overdueCount = getOverdueTasksFromList(tasks).length;
-  var todayCount = getTodayTasksFromList(tasks).length;
-  var upcomingCount = getTasksByVisualStatus(tasks, 'upcoming').length;
-  var doneCount = getDoneTasksFromList(tasks).length;
+  const counts = countTasksByVisualStatus(tasks);
 
   var overdueEl = document.getElementById('overdue-count');
   var todayEl = document.getElementById('today-count');
   var upcomingEl = document.getElementById('upcoming-count');
   var doneEl = document.getElementById('done-count');
 
-  if (overdueEl) overdueEl.textContent = overdueCount;
-  if (todayEl) todayEl.textContent = todayCount;
-  if (upcomingEl) upcomingEl.textContent = upcomingCount;
-  if (doneEl) doneEl.textContent = doneCount;
+  if (overdueEl) overdueEl.textContent = counts.overdue;
+  if (todayEl) todayEl.textContent = counts.today;
+  if (upcomingEl) upcomingEl.textContent = counts.upcoming;
+  if (doneEl) doneEl.textContent = counts.done;
 }
 
 function getBadgeEmoji(statusKey) {
@@ -192,16 +189,12 @@ function createUpcomingTaskElement(task, pets) {
 
 
 function getDashboardTasks(tasks, limit) {
-  var overdue = getOverdueTasksFromList(tasks);
-  var today = getTodayTasksFromList(tasks);
-  var upcoming = getTasksByVisualStatus(tasks, 'upcoming');
+  const orderedTasks = sortTasksByDate(tasks);
+  const overdue = filterTasksByVisualStatus(orderedTasks, "overdue");
+  const today = filterTasksByVisualStatus(orderedTasks, "today");
+  const upcoming = filterTasksByVisualStatus(orderedTasks, "upcoming");
 
-  overdue = sortTasksByDate(overdue);
-  today = sortTasksByDate(today);
-  upcoming = sortTasksByDate(upcoming);
-
-  var combined = overdue.concat(today, upcoming);
-  return combined.slice(0, limit);
+  return overdue.concat(today, upcoming).slice(0, limit);
 }
 
 

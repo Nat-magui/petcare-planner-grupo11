@@ -21,13 +21,6 @@ function showTaskMessage(message, type) {
   taskMessage.className = `alert alert-${type}`;
 }
 
-function getPetNameById(petId) {
-  const pets = getPets();
-  const pet = pets.find((item) => item.id === petId || item.name === petId);
-
-  return pet ? pet.name : "Mascota";
-}
-
 function renderPetOptions() {
   if (!taskPet) {
     return;
@@ -52,17 +45,10 @@ function renderPetOptions() {
   `;
 }
 
-function getFilteredTasks(tasks, filter) {
-  if (filter === "all") {
-    return tasks;
-  }
-
-  return filterTasksByVisualStatus(tasks, filter);
-}
-
-function renderTaskCard(task) {
+function renderTaskCard(task, pets) {
   const visualStatus = getTaskVisualStatus(task);
-  const petName = getPetNameById(task.petId);
+  const pet = getPetByIdFromList(pets, task.petId) ?? pets.find((item) => item.name === task.petId);
+  const petName = pet?.name || "Mascota";
   const date = formatDateToDisplay(task.date);
   const time = formatTimeToDisplay(task.time);
   const description = task.description || "Sin descripcion cargada.";
@@ -115,9 +101,10 @@ function renderTasks(filter = currentFilter) {
   });
 
   const tasks = sortTasksByDate(getTasks());
-  const filteredTasks = getFilteredTasks(tasks, filter);
+  const filteredTasks = filterTasksByVisualStatus(tasks, filter);
+  const pets = getPets();
   const content = filteredTasks.length > 0
-    ? filteredTasks.map(renderTaskCard).join("")
+    ? filteredTasks.map((task) => renderTaskCard(task, pets)).join("")
     : '<p class="card agenda-empty">No hay cuidados en este filtro.</p>';
 
   tasksList.innerHTML = content;
