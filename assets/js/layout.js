@@ -53,68 +53,54 @@
     return `<span aria-hidden="true">${item.fallbackIcon}</span>`;
   }
 
-  function renderNavLink(item) {
+  function renderBrand(className, assetPrefix) {
+    return `
+      <a class="${className}" href="${resolvePageHref("index")}" aria-label="Ir al inicio de PetCare Planner">
+        <span class="brand-paw" aria-hidden="true">
+          <img src="${assetPrefix}assets/img/brand/isotipo-paw.png" alt="" onerror="this.hidden = true">
+          <span>🐾</span>
+        </span>
+        <span class="app-brand__text">PetCare<br><strong>Planner</strong></span>
+      </a>
+    `;
+  }
+
+  function renderNavLink(item, className) {
     const isActive = item.key === pageKey;
     const activeClass = isActive ? " is-active" : "";
     const currentAttribute = isActive ? ' aria-current="page"' : "";
 
     return `
-      <a class="desktop-sidebar__link${activeClass}" href="${resolvePageHref(item.key)}"${currentAttribute}>
+      <a class="${className}${activeClass}" href="${resolvePageHref(item.key)}"${currentAttribute}>
         ${renderIconMarkup(item)}
         ${item.label}
       </a>
     `;
   }
 
-  function renderDisabledNavLink(item) {
+  function renderFutureNavItem(item) {
     return `
-      <a class="desktop-sidebar__link is-disabled" href="#" aria-disabled="true">
+      <div class="desktop-sidebar__link is-disabled">
         ${renderIconMarkup(item)}
         ${item.label}
-      </a>
+      </div>
     `;
   }
 
-  function renderBottomNavLink(item) {
-    const isActive = item.key === pageKey;
-    const activeClass = isActive ? " is-active" : "";
-    const currentAttribute = isActive ? ' aria-current="page"' : "";
-
-    return `
-      <a class="bottom-nav__link${activeClass}" href="${resolvePageHref(item.key)}"${currentAttribute}>
-        ${renderIconMarkup(item)}
-        ${item.label}
-      </a>
-    `;
-  }
-
-  function renderSidebar(container) {
+  function renderSidebar(container, assetPrefix) {
     if (!container) {
       return;
     }
 
-    const insidePages = isInsidePagesFolder();
-    const brandHref = insidePages ? "../index.html" : "./index.html";
-    const pawsImage = insidePages
-      ? "../assets/img/brand/isotipo-paw.png"
-      : "./assets/img/brand/isotipo-paw.png";
-    const sidebarImage = insidePages
-      ? "../assets/img/pets/sidebar-pets.png"
-      : "./assets/img/pets/sidebar-pets.png";
+    const sidebarImage = assetPrefix + "assets/img/pets/sidebar-pets.png";
 
     container.innerHTML = `
       <aside class="desktop-sidebar" aria-label="Navegación lateral">
-        <a class="desktop-sidebar__brand" href="${brandHref}" aria-label="Ir al inicio de PetCare Planner">
-          <span class="brand-paw" aria-hidden="true">
-            <img src="${pawsImage}" alt="" />
-            <span>🐾</span>
-          </span>
-          <span>PetCare<br /><strong>Planner</strong></span>
-        </a>
+        ${renderBrand("desktop-sidebar__brand", assetPrefix)}
 
         <nav class="desktop-sidebar__nav" aria-label="Navegación principal">
-          ${layoutConfig.mainNavItems.map((item) => renderNavLink(item)).join("")}
-          ${layoutConfig.futureNavItems.map((item) => renderDisabledNavLink(item)).join("")}
+          ${layoutConfig.mainNavItems.map((item) => renderNavLink(item, "desktop-sidebar__link")).join("")}
+          ${layoutConfig.futureNavItems.map((item) => renderFutureNavItem(item)).join("")}
         </nav>
 
         <article class="desktop-sidebar__message">
@@ -137,7 +123,7 @@
 
     container.innerHTML = `
       <nav class="bottom-nav" aria-label="Navegación principal">
-        ${layoutConfig.mainNavItems.map((item) => renderBottomNavLink(item)).join("")}
+        ${layoutConfig.mainNavItems.map((item) => renderNavLink(item, "bottom-nav__link")).join("")}
       </nav>
     `;
   }
@@ -152,7 +138,13 @@
   }
 
   function renderLayout() {
-    renderSidebar(document.querySelector("[data-layout-sidebar]"));
+    const assetPrefix = isInsidePagesFolder() ? "../" : "./";
+    const brand = document.querySelector("[data-layout-brand]");
+    if (brand) {
+      brand.innerHTML = renderBrand("app-brand", assetPrefix);
+    }
+
+    renderSidebar(document.querySelector("[data-layout-sidebar]"), assetPrefix);
     renderBottomNav(document.querySelector("[data-layout-bottom-nav]"));
     renderFooter(document.querySelector("[data-layout-footer]"));
 

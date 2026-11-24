@@ -58,28 +58,6 @@ body {
   color: var(--pet-purple);
 }
 
-.brand-paw {
-  width: 3.1rem;
-  height: 3.1rem;
-  display: grid;
-  place-items: center;
-  border-radius: 1.1rem;
-  color: var(--pet-purple);
-  font-size: 2.1rem;
-  line-height: 1;
-}
-
-.brand-paw img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: saturate(1.08) contrast(1.05);
-}
-
-.brand-paw img:not([hidden]) + span {
-  display: none;
-}
-
 /* =========================
    Layout principal (mobile)
    ========================= */
@@ -871,14 +849,6 @@ body {
   }
   .sidebar-pets-image:not([hidden]) ~ .pet-face {
     visibility: hidden;
-  }
-  .bottom-nav {
-    display: none;
-  }
-  .app-footer {
-    grid-area: footer;
-    margin-top: 0;
-    border-top: 1px solid var(--pet-border);
   }
   .stats-grid {
     grid-template-columns: repeat(4, 1fr);
