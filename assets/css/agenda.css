@@ -63,11 +63,6 @@
     padding-inline: 0.7rem;
 }
 
-#task-form :is(input, select, textarea):focus-visible {
-    outline: 2px solid var(--color-primary-dark);
-    outline-offset: 2px;
-}
-
 #task-form .form-textarea {
     min-height: 5rem;
 }
@@ -75,14 +70,6 @@
 #task-message:empty {
     position: absolute;
     padding: 0;
-}
-
-#task-message.alert-success {
-    color: #176838;
-}
-
-#task-message.alert-error {
-    color: #9e2244;
 }
 
 .agenda-filters {
@@ -119,14 +106,6 @@
 .task-card-header > section {
     flex: 1 1 12rem;
     min-width: 0;
-}
-
-.task-card .badge-danger {
-    color: #9e2244;
-}
-
-.task-card .badge-success {
-    color: #176838;
 }
 
 .task-card:focus {

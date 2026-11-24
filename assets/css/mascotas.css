@@ -1020,7 +1020,7 @@ body {
 }
 
 .pet-task-card--overdue .pet-task-card__date {
-  color: var(--color-danger);
+  color: var(--color-danger-text);
 }
 
 .pet-task-card .badge {
@@ -1089,12 +1089,6 @@ body {
 .form-textarea {
   min-height: 5.5rem;
   color: var(--pet-text);
-}
-
-.form-textarea:focus,
-.pet-file-input:focus {
-  border-color: var(--pet-purple);
-  outline: 3px solid rgba(109, 40, 217, 0.16);
 }
 
 .pet-file-input {
@@ -1439,7 +1433,7 @@ body {
   }
 
   .pet-task-card--overdue .pet-task-card__date {
-    color: var(--color-danger);
+    color: var(--color-danger-text);
   }
 
   .pet-task-card .badge {

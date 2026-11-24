@@ -76,11 +76,6 @@ body {
   align-items: stretch;
 }
 
-.tip-of-the-day {
-  padding: 0;
-  margin-top: 1rem;
-}
-
 .bottom-nav {
   margin-top: auto;
 }
@@ -229,33 +224,33 @@ body {
   background: #ffe8ee;
 }
 .stat-card--danger .stat-card__value {
-  color: #f04464;
+  color: var(--color-danger-text);
 }
 .stat-card--danger .stat-card__icon {
   background: rgba(240, 68, 100, 0.15);
-  color: #f04464;
+  color: var(--color-danger-text);
 }
 
 .stat-card--warning {
   background: #fff3d6;
 }
 .stat-card--warning .stat-card__value {
-  color: #f59e0b;
+  color: var(--color-warning-text);
 }
 .stat-card--warning .stat-card__icon {
   background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
+  color: var(--color-warning-text);
 }
 
 .stat-card--success {
   background: #e5f8eb;
 }
 .stat-card--success .stat-card__value {
-  color: #22a956;
+  color: var(--color-success-text);
 }
 .stat-card--success .stat-card__icon {
   background: rgba(34, 169, 86, 0.15);
-  color: #22a956;
+  color: var(--color-success-text);
 }
 
 .stat-card--primary {
@@ -455,8 +450,8 @@ body {
   flex: 0 0 auto;
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 50%;
   font-size: 1.25rem;
   color: var(--color-muted);
@@ -682,10 +677,6 @@ body {
     gap: var(--space-lg);
     padding: 0 1rem 2rem 0;
     margin: 0;
-  }
-
-  .tip-of-the-day {
-    margin-top: var(--space-md);
   }
 
   .tip-content {
