@@ -1,6 +1,8 @@
 # PetCare Planner
 
-Aplicación web para organizar el cuidado diario de mascotas, con foco en tareas, recordatorios y seguimiento del estado de cada cuidado.
+Aplicación web para registrar mascotas, agendar sus cuidados y marcar tareas como realizadas. Proyecto grupal de IntegrarTEC, Equipo 11.
+
+[Probar la demo local](#9-demo-local) · [Ver mi aporte](#mi-aporte) · [Repositorio original](https://github.com/slaguirre1809-hash/petcare-planner-grupo11)
 
 ---
 
@@ -13,13 +15,13 @@ Aplicación web para organizar el cuidado diario de mascotas, con foco en tareas
 - [5. Funcionalidades principales](#5-funcionalidades-principales)
 - [6. Estructura del proyecto](#6-estructura-del-proyecto)
 - [7. Arquitectura y organización del código](#7-arquitectura-y-organización-del-código)
-- [8. Instrucciones de uso (usuario)](#8-instrucciones-de-uso-usuario)
-- [9. Instalación y ejecución local (desarrollo)](#9-instalación-y-ejecución-local-desarrollo)
+- [8. Cómo probar la Agenda](#8-cómo-probar-la-agenda)
+- [9. Demo local](#9-demo-local)
 - [10. Deploy en Vercel](#10-deploy-en-vercel)
 - [11. Persistencia de datos](#11-persistencia-de-datos)
 - [12. Estado del proyecto / alcance MVP](#12-estado-del-proyecto--alcance-mvp)
 - [13. Uso de IA](#13-uso-de-ia)
-- [14. Links](#14-links)
+- [14. Enlaces](#14-enlaces)
 - [15. Posibles mejoras futuras](#15-posibles-mejoras-futuras)
 - [16. Licencia](#16-licencia)
 
@@ -53,11 +55,20 @@ Construir un **MVP funcional, simple y claro** (HTML + CSS + JavaScript vanilla)
 
 ## 3. Integrantes
 
-- **Almiron, Luca**
-- **[Apellido, Nombre]**
-- **[Apellido, Nombre]**
+- **Magalí Aldana Suárez** — Mascotas, alta de perfiles y presentación de sus datos.
+- **Santiago** — Agenda, fechas, filtros por estado y actualización de tareas.
+- **Luca Almiron** — Inicio, estadísticas y listado de cuidados.
 
-> Reemplazar los placeholders por nombres reales antes de la entrega final.
+### Mi aporte
+
+Me encargué de la sección **Mascotas**. También trabajé en la navegación compartida, el pie de página responsive y la integración de la entrega grupal.
+
+- [Vista previa de la foto en Mascotas](https://github.com/Nat-magui/petcare-planner-grupo11/commit/96a4bf44a4)
+- [Navegación compartida de escritorio](https://github.com/Nat-magui/petcare-planner-grupo11/commit/3d4770d149)
+- [Ajustes del pie de página](https://github.com/Nat-magui/petcare-planner-grupo11/commit/bbfd4de79c)
+- [Integración de la entrega grupal](https://github.com/Nat-magui/petcare-planner-grupo11/commit/2a5d875ac8)
+
+En este fork también corregí el manejo de fallos de persistencia, la presentación de texto ingresado y el listado de tareas de Inicio. Mejoré la validación y el uso con teclado en Agenda.
 
 ---
 
@@ -78,7 +89,7 @@ Construir un **MVP funcional, simple y claro** (HTML + CSS + JavaScript vanilla)
 - Edición de información de mascota.
 
 ### 5.2 Agenda centralizada
-- Alta de tareas de cuidado con fecha y hora.
+- Alta de tareas de cuidado con fecha obligatoria y hora opcional.
 - Asociación de cada tarea a una mascota.
 
 ### 5.3 Seguimiento de tareas
@@ -86,11 +97,8 @@ Construir un **MVP funcional, simple y claro** (HTML + CSS + JavaScript vanilla)
 - Separación visual de tareas activas y completadas.
 
 ### 5.4 Filtros por estado
-- Visualización por estado:
-  - pendientes,
-  - vencidas,
-  - realizadas,
-  - próximas / hoy (según pantalla).
+- Agenda incluye los filtros **Todas**, **Vencidas**, **Hoy**, **Próximas** y **Realizadas**.
+- Las tareas activas se clasifican por fecha local. La hora orienta el cuidado dentro del día.
 
 ### 5.5 UI por tarjetas
 - Lectura rápida con estilos diferenciados:
@@ -147,41 +155,25 @@ petcare-planner-grupo11/
 
 ---
 
-## 8. Instrucciones de uso (usuario)
+## 8. Cómo probar la Agenda
 
-1. **Registrar mascota**
-   - Ir a la sección **Mascotas**.
-   - Completar datos del perfil y guardar.
+1. En **Mascotas**, agregá una mascota llamada **Bruma** y guardala.
+2. En **Agenda**, seleccioná **Bruma** y creá **Control veterinario** con la fecha de hoy. La hora es opcional.
+3. Recargá la página y elegí **Hoy**. La tarea debe conservar su título, fecha y mascota.
+4. Elegí **Marcar realizada**. La tarea debe salir de **Hoy** y aparecer en **Realizadas**.
+5. Recargá, aplicá **Realizadas** otra vez y confirmá que la tarea sigue ahí. En **Inicio**, el contador de realizadas debe reflejar el cambio.
 
-2. **Crear tarea de cuidado**
-   - Ir a **Agenda**.
-   - Seleccionar mascota, escribir la tarea y definir fecha/hora.
+## 9. Demo local
 
-3. **Control diario**
-   - Revisar estados en Inicio/Agenda:
-     - Vencida,
-     - Hoy,
-     - Próxima.
+Cloná el fork y serví la carpeta con Node.js:
 
-4. **Marcar realizada**
-   - En cada tarjeta de tarea, usar la acción **Marcar realizada** al completar el cuidado.
-
----
-
-## 9. Instalación y ejecución local (desarrollo)
-
-Como es un proyecto estático, podés abrir `index.html` directamente.  
-Para una experiencia más estable, se recomienda levantar servidor local.
-
-### Opción A: VS Code + Live Server
-1. Instalar extensión **Live Server**.
-2. Abrir el proyecto.
-3. Clic derecho en `index.html` → **Open with Live Server**.
-
-### Opción B: servidor simple con Node
 ```bash
+git clone https://github.com/Nat-magui/petcare-planner-grupo11.git
+cd petcare-planner-grupo11
 npx serve .
 ```
+
+Abrí la URL que muestra el comando. También podés abrir `index.html` con **Live Server** desde VS Code. Usá la misma URL durante todo el recorrido para conservar el almacenamiento de la prueba.
 
 ---
 
@@ -207,11 +199,9 @@ Como es una app estática, no requiere variables de entorno ni build pipeline.
 
 ## 11. Persistencia de datos
 
-La aplicación guarda datos en **LocalStorage** del navegador.
+Las mascotas, sus fotos cargadas y las tareas se guardan en `localStorage`. Los datos se conservan al recargar si usás el mismo perfil del navegador y el mismo origen (protocolo, dominio y puerto). La demo publicada y el servidor local tienen almacenamientos separados.
 
-- Ventaja: no requiere backend para el MVP.
-- Limitación: los datos quedan ligados al navegador/dispositivo.
-- Si se limpia caché/localStorage, se pierden datos locales.
+La aplicación funciona sin backend. Los datos no se sincronizan entre navegadores o dispositivos y se pierden si borrás los datos del sitio. Los ejemplos se cargan en la primera visita y se respetan las listas vacías que ya se guardaron.
 
 ---
 
@@ -233,19 +223,13 @@ La aplicación guarda datos en **LocalStorage** del navegador.
 
 ## 13. Uso de IA
 
-- Informe/documentación de uso de IA:
-  - **[link al informe]**
+El [informe de uso de IA](docs/informe-ia.md) documenta el apoyo de estas herramientas y las responsabilidades del equipo.
 
-> Reemplazar por el enlace real del informe antes de publicar.
+## 14. Enlaces
 
----
-
-## 14. Links
-
-- **Repositorio:** [link]
-- **Deploy (Vercel):** [link]
-
-> Reemplazar por enlaces reales.
+- [Fork de Magalí](https://github.com/Nat-magui/petcare-planner-grupo11)
+- [Repositorio original del Equipo 11](https://github.com/slaguirre1809-hash/petcare-planner-grupo11)
+- [Demo local](#9-demo-local)
 
 ---
 
@@ -261,4 +245,4 @@ La aplicación guarda datos en **LocalStorage** del navegador.
 
 ## 16. Licencia
 
-Definir licencia del proyecto (por ejemplo MIT) según criterio del equipo/cátedra.
+La licencia está pendiente de definición por el equipo.
