@@ -1,21 +1,59 @@
-.agenda-page > header {
-    border-bottom: 1px solid var(--color-border);
+.agenda-page .app-brand {
+    gap: var(--space-xs);
+    text-decoration: none;
+}
+
+.agenda-page .app-brand strong {
+    color: var(--color-primary-dark);
+}
+
+.agenda-page .brand-paw {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 3.1rem;
+    height: 3.1rem;
+    font-size: 1.65rem;
+}
+
+.agenda-page .brand-paw img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.agenda-page .brand-paw img:not([hidden]) + span {
+    display: none;
+}
+
+.agenda-page .bottom-nav__link {
+    text-decoration: none;
 }
 
 .agenda-page #main-content {
     display: grid;
+    align-content: start;
     gap: var(--space-lg);
     min-width: 0;
     margin-block: var(--space-lg);
 }
 
-.agenda-intro h1 {
-    font-size: clamp(1.65rem, 4vw, 2.5rem);
-    margin-bottom: var(--space-xs);
+.agenda-intro {
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    background: var(--color-primary-light);
 }
 
-.agenda-intro p {
-    margin: 0;
+.agenda-intro .page-title {
+    margin-bottom: var(--space-sm);
+    color: var(--color-primary-dark);
+    font-size: 1.6rem;
+    font-weight: 900;
+}
+
+.agenda-intro .page-subtitle {
+    font-size: 0.95rem;
+    line-height: 1.45;
 }
 
 .agenda-workspace,
@@ -30,7 +68,7 @@
 
 .task-form-section {
     align-content: start;
-    padding: clamp(var(--space-md), 3vw, var(--space-lg));
+    padding: clamp(var(--space-md), 2vw, 1.25rem);
 }
 
 .task-form-section h2,
@@ -39,8 +77,13 @@
     font-size: 1.25rem;
 }
 
-.agenda-schedule .form-group {
+.agenda-schedule .form-group,
+.agenda-schedule .form-input {
     min-width: 0;
+}
+
+.agenda-schedule .form-input {
+    padding-inline: 0.7rem;
 }
 
 #task-form :is(input, select, textarea):focus-visible {
@@ -84,6 +127,7 @@
 .task-card {
     display: grid;
     gap: var(--space-sm);
+    box-shadow: none;
     overflow-wrap: anywhere;
 }
 
@@ -145,9 +189,8 @@
         padding-bottom: 0;
         display: grid;
         grid-template-columns: 15.5rem minmax(0, 1fr);
-        grid-template-rows: auto minmax(0, 1fr) auto;
+        grid-template-rows: 1fr auto;
         grid-template-areas:
-            "sidebar topbar"
             "sidebar main"
             "footer footer";
         column-gap: 1.5rem;
@@ -163,14 +206,9 @@
         grid-area: sidebar;
     }
 
-    .agenda-page > header.app-container {
-        grid-area: topbar;
-        width: auto;
-        max-width: none;
-        margin: 0;
-        padding: 0.85rem 1.25rem 0.45rem 0.5rem;
-        border-bottom: 1px solid var(--color-border);
-        background: transparent;
+    .agenda-page > header.app-container,
+    .agenda-page > [data-layout-bottom-nav] {
+        display: none;
     }
 
     .agenda-page #main-content.app-container {
@@ -179,6 +217,17 @@
         max-width: none;
         margin: 0;
         padding: 1.25rem 1.25rem 2rem 0;
+    }
+
+    .agenda-intro {
+        padding: 0;
+        background: transparent;
+    }
+
+    .agenda-intro .page-title {
+        color: var(--color-text);
+        font-size: 2.05rem;
+        line-height: 1.1;
     }
 
     .agenda-workspace {
