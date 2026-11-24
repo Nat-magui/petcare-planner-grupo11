@@ -4,6 +4,9 @@ const taskTitle = document.querySelector("#task-title");
 const taskDescription = document.querySelector("#task-description");
 const taskDate = document.querySelector("#task-date");
 const taskTime = document.querySelector("#task-time");
+const taskFormTitle = document.querySelector("#task-form-title");
+const taskSubmit = document.querySelector("#task-submit");
+const taskCancelEdit = document.querySelector("#task-cancel-edit");
 const taskMessage = document.querySelector("#task-message");
 const tasksList = document.querySelector("#tasks-list");
 const filterButtons = document.querySelectorAll("[data-filter]");
@@ -11,6 +14,7 @@ const filterButtons = document.querySelectorAll("[data-filter]");
 const agendaParams = new URLSearchParams(window.location.search);
 const requestedPetId = agendaParams.get("mascota");
 let currentFilter = "all";
+let editingTaskId = null;
 
 seedInitialData();
 
@@ -65,19 +69,8 @@ function renderTaskCard(task, pets) {
   const date = formatDateToDisplay(task.date);
   const time = formatTimeToDisplay(task.time);
   const description = task.description || "Sin descripcion cargada.";
-  const doneAction = task.status !== "done"
-    ? `
-      <footer class="task-card-actions">
-        <button
-          class="btn btn-secondary"
-          type="button"
-          data-done="${escapeHTML(task.id)}"
-        >
-          Marcar realizada
-        </button>
-      </footer>
-    `
-    : "";
+  const completed = task.status === "done";
+  const taskId = escapeHTML(task.id);
 
   return `
     <article class="card task-card" id="task-${escapeHTML(task.id)}" tabindex="-1">
@@ -98,7 +91,17 @@ function renderTaskCard(task, pets) {
 
       <p class="card-text">${escapeHTML(description)}</p>
 
-      ${doneAction}
+      <footer class="task-card-actions">
+        <button class="btn btn-ghost" type="button" data-edit-task="${taskId}">Editar</button>
+        <button
+          class="btn btn-secondary"
+          type="button"
+          data-task-status="${completed ? "pending" : "done"}"
+          data-task-id="${taskId}"
+        >
+          ${completed ? "Volver a pendiente" : "Marcar realizada"}
+        </button>
+      </footer>
     </article>
   `;
 }
@@ -123,6 +126,65 @@ function renderTasks(filter = currentFilter) {
   tasksList.innerHTML = content;
 }
 
+function setEditingTask(taskId = null) {
+  editingTaskId = taskId;
+  const isEditing = taskId !== null;
+  taskFormTitle.textContent = isEditing ? "Editar cuidado" : "Agregar cuidado";
+  taskSubmit.textContent = isEditing ? "Guardar cambios" : "Guardar cuidado";
+  taskCancelEdit.hidden = !isEditing;
+}
+
+function resetTaskForm() {
+  taskForm.reset();
+  if (scopedPet) taskPet.value = scopedPet.id;
+  setEditingTask();
+}
+
+function openTaskEditor(taskId) {
+  if (editingTaskId === taskId) {
+    taskTitle.focus();
+    return;
+  }
+
+  const task = getTaskById(taskId);
+  if (!task) {
+    showTaskMessage("El cuidado que querés editar no está disponible.", "error");
+    return;
+  }
+
+  renderPetOptions();
+  const pets = getPets();
+  const pet = getPetByIdFromList(pets, task.petId) ?? pets.find((item) => item.name === task.petId);
+  taskPet.value = pet?.id ?? "";
+  taskTitle.value = task.title ?? "";
+  taskDescription.value = task.description ?? "";
+  taskDate.value = formatDateForInput(task.date);
+  taskTime.value = task.time ?? "";
+  setEditingTask(task.id);
+  showTaskMessage("", "info");
+  (pet ? taskTitle : taskPet).focus();
+}
+
+function showSavedTask(task, message) {
+  const changedPet = Boolean(scopedPet && scopedPet.id !== task.petId);
+  if (changedPet) {
+    scopedPet = null;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("mascota");
+    window.history.replaceState(window.history.state, "", url);
+    renderPetScope();
+    message += " Se quitó el filtro de mascota para mostrarla.";
+  }
+
+  const visibleInCurrentFilter =
+    currentFilter === "all" || getTaskVisualStatus(task).key === currentFilter;
+
+  renderTasks(visibleInCurrentFilter ? currentFilter : "all");
+  if (!visibleInCurrentFilter) message += " Se seleccionó el filtro Todas.";
+  showTaskMessage(message, "success");
+  focusTaskCard(task.id);
+}
+
 function handleTaskSubmit(event) {
   event.preventDefault();
 
@@ -131,8 +193,7 @@ function handleTaskSubmit(event) {
     title: taskTitle.value,
     description: taskDescription.value,
     date: taskDate.value,
-    time: taskTime.value,
-    status: "pending"
+    time: taskTime.value
   };
 
   if (!taskData.petId || !cleanText(taskData.title) || !taskData.date) {
@@ -151,34 +212,16 @@ function handleTaskSubmit(event) {
     return;
   }
 
-  const createdTask = addTask(taskData);
+  const savedTask = editingTaskId ? updateTask(editingTaskId, taskData) : addTask(taskData);
 
-  if (!createdTask) {
-    showTaskMessage("No se pudo guardar la tarea en este navegador. Volvé a intentar.", "error");
+  if (!savedTask) {
+    showTaskMessage("No se pudo guardar el cuidado. Revisá los datos y volvé a intentar.", "error");
     return;
   }
 
-  const changedPet = Boolean(scopedPet && scopedPet.id !== createdTask.petId);
-  if (changedPet) {
-    scopedPet = null;
-    const url = new URL(window.location.href);
-    url.searchParams.delete("mascota");
-    window.history.replaceState(window.history.state, "", url);
-    renderPetScope();
-  }
-
-  taskForm.reset();
-  if (scopedPet) taskPet.value = scopedPet.id;
-
-  const visibleInCurrentFilter =
-    currentFilter === "all" || getTaskVisualStatus(createdTask).key === currentFilter;
-
-  renderTasks(visibleInCurrentFilter ? currentFilter : "all");
-  let message = "Tarea creada correctamente.";
-  if (changedPet) message += " Se quitó el filtro de mascota para mostrarla.";
-  if (!visibleInCurrentFilter) message += " Se seleccionó el filtro Todas.";
-  showTaskMessage(message, "success");
-  focusTaskCard(createdTask.id);
+  const message = editingTaskId ? "Cambios guardados." : "Tarea creada correctamente.";
+  showSavedTask(savedTask, message);
+  resetTaskForm();
 }
 
 function handleTaskFilter(event) {
@@ -191,11 +234,17 @@ function handleTaskFilter(event) {
   renderTasks(button.dataset.filter);
 }
 
-function handleMarkTaskAsDone(taskId) {
-  const updatedTask = markTaskAsDone(taskId);
+function handleTaskStatusChange(taskId, status) {
+  const reopen = status === "pending";
+  const updatedTask = reopen ? markTaskAsPending(taskId) : markTaskAsDone(taskId);
 
   if (!updatedTask) {
     showTaskMessage("No se pudo actualizar la tarea.", "error");
+    return;
+  }
+
+  if (reopen) {
+    showSavedTask(updatedTask, "El cuidado volvió a pendiente.");
     return;
   }
 
@@ -207,19 +256,33 @@ if (taskForm) {
   taskForm.addEventListener("submit", handleTaskSubmit);
 }
 
+taskCancelEdit?.addEventListener("click", () => {
+  const taskId = editingTaskId;
+  resetTaskForm();
+  showTaskMessage("", "info");
+  const taskCard = document.getElementById(`task-${taskId}`);
+  (taskCard?.querySelector("[data-edit-task]") ?? taskTitle)?.focus();
+});
+
 filterButtons.forEach((button) => {
   button.addEventListener("click", handleTaskFilter);
 });
 
 if (tasksList) {
   tasksList.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-done]");
+    const editButton = event.target.closest("[data-edit-task]");
+    if (editButton) {
+      openTaskEditor(editButton.dataset.editTask);
+      return;
+    }
+
+    const button = event.target.closest("[data-task-status]");
 
     if (button) {
-      const taskId = button.dataset.done;
-      handleMarkTaskAsDone(taskId);
+      const taskId = button.dataset.taskId;
+      handleTaskStatusChange(taskId, button.dataset.taskStatus);
 
-      if (!button.isConnected) {
+      if (button.dataset.taskStatus === "done" && !button.isConnected) {
         const taskCard = document.getElementById(`task-${taskId}`);
         const activeFilter = Array.from(filterButtons).find((filterButton) => {
           return filterButton.dataset.filter === currentFilter;
