@@ -825,6 +825,28 @@ body {
   white-space: nowrap;
 }
 
+.pet-history h3 {
+  margin-bottom: var(--space-sm);
+}
+
+.pet-history .summary-task-row {
+  grid-template-columns: 3rem minmax(0, 1fr) auto auto;
+}
+
+.pet-history__link {
+  display: inline-block;
+  margin-top: var(--space-xs);
+  color: var(--color-primary-dark);
+  font-size: 0.85rem;
+  font-weight: 750;
+}
+
+@media (max-width: 1099px) {
+  .pet-history .summary-task-row {
+    grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+  }
+}
+
 .summary-task-row__chevron {
   color: #64748b;
   display: grid;

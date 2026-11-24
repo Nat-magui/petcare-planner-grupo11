@@ -8,9 +8,13 @@ const taskMessage = document.querySelector("#task-message");
 const tasksList = document.querySelector("#tasks-list");
 const filterButtons = document.querySelectorAll("[data-filter]");
 
+const agendaParams = new URLSearchParams(window.location.search);
+const requestedPetId = agendaParams.get("mascota");
 let currentFilter = "all";
 
 seedInitialData();
+
+let scopedPet = requestedPetId ? getPetById(requestedPetId) : null;
 
 function showTaskMessage(message, type) {
   if (!taskMessage) {
@@ -19,6 +23,12 @@ function showTaskMessage(message, type) {
 
   taskMessage.textContent = message;
   taskMessage.className = `alert alert-${type}`;
+}
+
+function renderPetScope() {
+  const scope = document.getElementById("agenda-pet-scope");
+  scope.hidden = !scopedPet;
+  document.getElementById("agenda-pet-scope-name").textContent = scopedPet?.name ?? "";
 }
 
 function renderPetOptions() {
@@ -43,6 +53,9 @@ function renderPetOptions() {
     <option value="">Seleccionar mascota</option>
     ${options.join("")}
   `;
+  if (scopedPet && pets.some((pet) => pet.id === scopedPet.id)) {
+    taskPet.value = scopedPet.id;
+  }
 }
 
 function renderTaskCard(task, pets) {
@@ -100,8 +113,8 @@ function renderTasks(filter = currentFilter) {
     button.setAttribute("aria-pressed", String(button.dataset.filter === currentFilter));
   });
 
-  const tasks = sortTasksByDate(getTasks());
-  const filteredTasks = filterTasksByVisualStatus(tasks, filter);
+  const tasks = scopedPet ? getTasksByPetId(scopedPet.id) : getTasks();
+  const filteredTasks = filterTasksByVisualStatus(sortTasksByDate(tasks), filter);
   const pets = getPets();
   const content = filteredTasks.length > 0
     ? filteredTasks.map((task) => renderTaskCard(task, pets)).join("")
@@ -145,14 +158,25 @@ function handleTaskSubmit(event) {
     return;
   }
 
+  const changedPet = Boolean(scopedPet && scopedPet.id !== createdTask.petId);
+  if (changedPet) {
+    scopedPet = null;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("mascota");
+    window.history.replaceState(window.history.state, "", url);
+    renderPetScope();
+  }
+
   taskForm.reset();
+  if (scopedPet) taskPet.value = scopedPet.id;
+
   const visibleInCurrentFilter =
     currentFilter === "all" || getTaskVisualStatus(createdTask).key === currentFilter;
 
   renderTasks(visibleInCurrentFilter ? currentFilter : "all");
-  const message = visibleInCurrentFilter
-    ? "Tarea creada correctamente."
-    : "Tarea creada correctamente. Se muestran todas las tareas.";
+  let message = "Tarea creada correctamente.";
+  if (changedPet) message += " Se quitó el filtro de mascota para mostrarla.";
+  if (!visibleInCurrentFilter) message += " Se seleccionó el filtro Todas.";
   showTaskMessage(message, "success");
   focusTaskCard(createdTask.id);
 }
@@ -206,14 +230,18 @@ if (tasksList) {
   });
 }
 
+renderPetScope();
 renderPetOptions();
 renderTasks();
+
+if (requestedPetId && !scopedPet) {
+  showTaskMessage("La mascota solicitada no está disponible. Se muestran todos los cuidados.", "info");
+}
 
 function focusTaskCard(taskId) {
   document.getElementById(`task-${taskId}`)?.focus();
 }
 
-const agendaParams = new URLSearchParams(window.location.search);
 const linkedTaskId = agendaParams.get("tarea");
 
 if (linkedTaskId) {
