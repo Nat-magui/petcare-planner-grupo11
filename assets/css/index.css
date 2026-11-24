@@ -181,14 +181,9 @@ body {
 }
 
 .stat-card {
-  display: grid;
   justify-items: center;
   text-align: center;
-  gap: 0.25rem;
-  background: #ffffff;
-  border: 1px solid var(--pet-soft-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-md);
+  border-color: var(--pet-soft-border);
   box-shadow: var(--pet-shadow);
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -390,11 +385,7 @@ body {
 .task-card {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-md);
-  border: 1px solid var(--pet-border);
-  border-radius: var(--radius-lg);
-  background: #ffffff;
+  border-color: var(--pet-border);
   box-shadow: var(--pet-shadow);
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -695,7 +686,15 @@ body {
   }
 
   .index-hero {
-    margin-top: 3rem;   
+    margin-top: var(--space-lg);
+  }
+
+  .highlight-block__subtitle {
+    margin-bottom: 0;
+  }
+
+  .stats-section {
+    margin-top: 0;
   }
 
   .index-topbar {
@@ -719,6 +718,8 @@ body {
   /* Main y aside */
   .index-main {
     grid-area: main;
+    align-content: start;
+    gap: var(--space-md);
     padding: 0 0 2rem 1rem;
     margin: 0;
   }
@@ -726,14 +727,23 @@ body {
     grid-area: aside;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: var(--space-lg);
     padding: 0 1rem 2rem 0;
     margin: 0;
   }
 
   .tip-of-the-day {
-    margin-top: 2rem; 
-    padding: 0;
+    margin-top: var(--space-md);
+  }
+
+  .tip-content {
+    gap: var(--space-sm);
+    padding: 0.85rem var(--space-md);
+  }
+
+  .tip-icon {
+    width: 3rem;
+    height: 3rem;
   }
 
   .desktop-sidebar {
@@ -851,7 +861,7 @@ body {
     visibility: hidden;
   }
   .stats-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .pets-list-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -895,5 +905,10 @@ body {
 
   .upcoming-tasks-aside .tasks-list {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1360px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
