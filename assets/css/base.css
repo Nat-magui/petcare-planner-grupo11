@@ -12,15 +12,19 @@
   /* Estados */
   --color-danger: #f04464;
   --color-danger-light: #ffe8ee;
+  --color-danger-text: #9e2244;
 
   --color-warning: #f59e0b;
   --color-warning-light: #fff3d6;
+  --color-warning-text: #9a5f00;
 
   --color-success: #22a956;
   --color-success-light: #e5f8eb;
+  --color-success-text: #176838;
 
   --color-info: #4f7cff;
   --color-info-light: #eaf0ff;
+  --color-info-text: #2549a5;
 
   /* Neutros */
   --color-bg: #fbfaff;
@@ -28,6 +32,7 @@
   --color-text: #171421;
   --color-muted: #667085;
   --color-border: #e7e2f3;
+  --color-field-border: #8b8298;
   --color-white: #ffffff;
 
   /* Sombras */
@@ -198,8 +203,15 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid var(--color-primary);
+  outline: 3px solid var(--color-primary-dark);
   outline-offset: 3px;
+}
+
+/* Reserva espacio cuando la navegación inferior está fija. */
+@media (max-width: 767px) {
+  html {
+    scroll-padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+  }
 }
 
 /* Layout general */
