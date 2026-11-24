@@ -12,13 +12,13 @@ let currentFilter = "all";
 
 seedInitialData();
 
-function showTaskMessage(message, type = "") {
+function showTaskMessage(message, type) {
   if (!taskMessage) {
     return;
   }
 
   taskMessage.textContent = message;
-  taskMessage.className = type;
+  taskMessage.className = `alert alert-${type}`;
 }
 
 function getPetNameById(petId) {
@@ -70,7 +70,7 @@ function renderTaskCard(task) {
     ? `
       <footer class="task-card-actions">
         <button
-          class="btn btn-primary"
+          class="btn btn-secondary"
           type="button"
           data-done="${escapeHTML(task.id)}"
         >
@@ -84,8 +84,8 @@ function renderTaskCard(task) {
     <article class="card task-card" id="task-${escapeHTML(task.id)}" tabindex="-1">
       <header class="task-card-header">
         <section>
-          <h3>${escapeHTML(task.title)}</h3>
-          <p>
+          <h3 class="card-title">${escapeHTML(task.title)}</h3>
+          <p class="card-text">
             ${escapeHTML(petName)} &middot;
             ${escapeHTML(date)} &middot;
             ${escapeHTML(time)}
@@ -97,7 +97,7 @@ function renderTaskCard(task) {
         </p>
       </header>
 
-      <p>${escapeHTML(description)}</p>
+      <p class="card-text">${escapeHTML(description)}</p>
 
       ${doneAction}
     </article>
@@ -118,12 +118,9 @@ function renderTasks(filter = currentFilter) {
   const filteredTasks = getFilteredTasks(tasks, filter);
   const content = filteredTasks.length > 0
     ? filteredTasks.map(renderTaskCard).join("")
-    : '<p class="empty-state">No hay tareas para mostrar.</p>';
+    : '<p class="card agenda-empty">No hay cuidados en este filtro.</p>';
 
-  tasksList.innerHTML = `
-    <h2>Listado de tareas</h2>
-    ${content}
-  `;
+  tasksList.innerHTML = content;
 }
 
 function handleTaskSubmit(event) {
@@ -139,13 +136,13 @@ function handleTaskSubmit(event) {
   };
 
   if (!taskData.petId || !cleanText(taskData.title) || !taskData.date) {
-    showTaskMessage("Completá los campos obligatorios.", "overdue");
+    showTaskMessage("Completá los campos obligatorios.", "error");
     return;
   }
 
   if (!getPetById(taskData.petId)) {
     renderPetOptions();
-    showTaskMessage("La mascota seleccionada ya no está disponible.", "overdue");
+    showTaskMessage("La mascota seleccionada ya no está disponible.", "error");
     if (taskPet.disabled) {
       document.querySelector("#task-pet-help a")?.focus();
     } else {
@@ -157,12 +154,12 @@ function handleTaskSubmit(event) {
   const createdTask = addTask(taskData);
 
   if (!createdTask) {
-    showTaskMessage("No se pudo guardar la tarea en este navegador. Volvé a intentar.", "overdue");
+    showTaskMessage("No se pudo guardar la tarea en este navegador. Volvé a intentar.", "error");
     return;
   }
 
   taskForm.reset();
-  showTaskMessage("Tarea creada correctamente.", "upcoming");
+  showTaskMessage("Tarea creada correctamente.", "success");
   renderTasks(currentFilter);
 }
 
@@ -180,11 +177,11 @@ function handleMarkTaskAsDone(taskId) {
   const updatedTask = markTaskAsDone(taskId);
 
   if (!updatedTask) {
-    showTaskMessage("No se pudo actualizar la tarea.", "overdue");
+    showTaskMessage("No se pudo actualizar la tarea.", "error");
     return;
   }
 
-  showTaskMessage("Tarea marcada como realizada.", "upcoming");
+  showTaskMessage("Tarea marcada como realizada.", "success");
   renderTasks(currentFilter);
 }
 
