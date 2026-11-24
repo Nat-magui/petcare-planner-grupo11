@@ -146,8 +146,15 @@ function handleTaskSubmit(event) {
   }
 
   taskForm.reset();
-  showTaskMessage("Tarea creada correctamente.", "success");
-  renderTasks(currentFilter);
+  const visibleInCurrentFilter =
+    currentFilter === "all" || getTaskVisualStatus(createdTask).key === currentFilter;
+
+  renderTasks(visibleInCurrentFilter ? currentFilter : "all");
+  const message = visibleInCurrentFilter
+    ? "Tarea creada correctamente."
+    : "Tarea creada correctamente. Se muestran todas las tareas.";
+  showTaskMessage(message, "success");
+  focusTaskCard(createdTask.id);
 }
 
 function handleTaskFilter(event) {
@@ -202,7 +209,16 @@ if (tasksList) {
 renderPetOptions();
 renderTasks();
 
-const linkedTaskId = new URLSearchParams(window.location.search).get("tarea");
-if (linkedTaskId && tasksList) {
-  document.getElementById(`task-${linkedTaskId}`)?.focus();
+function focusTaskCard(taskId) {
+  document.getElementById(`task-${taskId}`)?.focus();
+}
+
+const agendaParams = new URLSearchParams(window.location.search);
+const linkedTaskId = agendaParams.get("tarea");
+
+if (linkedTaskId) {
+  focusTaskCard(linkedTaskId);
+} else if (agendaParams.get("accion") === "nueva" && taskPet) {
+  const firstControl = taskPet.disabled ? document.querySelector("#task-pet-help a") : taskPet;
+  firstControl?.focus();
 }

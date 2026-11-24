@@ -272,15 +272,6 @@ function createLucideIcons() {
   }
 }
 
-function addPetBtnHandler() {
-  const addPetBtn = document.querySelector('.pet-add-card');
-if (addPetBtn) {
-  addPetBtn.addEventListener('click', () => {
-    window.location.href = './pages/mascotas.html';
-  });
-}
-}
-
 function initDashboard() {
   try {
     seedInitialData();
@@ -294,7 +285,6 @@ function initDashboard() {
     renderPets(pets);
     updateTipOfTheDay();
     createLucideIcons();
-    addPetBtnHandler();
     renderUserProfile();
 
     var tipLink = document.querySelector('.tip-of-the-day__button');
