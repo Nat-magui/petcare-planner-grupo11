@@ -605,49 +605,38 @@ function renderSelectedPet() {
 
 function getPetTaskSummary() {
   const petTasks = selectedPetId ? getTasksByPetId(selectedPetId) : [];
+  const counts = countTasksByVisualStatus(petTasks);
 
   return [
     {
       className: "danger",
       icon: "circle-alert",
-      value: petTasks.filter((task) => getTaskVisualStatus(task).key === "overdue").length,
-      label: "Pendientes",
+      value: counts.overdue,
+      label: "Vencidas",
       text: "Requieren atención"
     },
     {
       className: "warning",
       icon: "sun",
-      value: getTodayTasksFromList(petTasks).length,
+      value: counts.today,
       label: "Hoy",
       text: "Para hoy"
     },
     {
       className: "success",
       icon: "calendar-days",
-      value: getTasksByVisualStatus(petTasks, "upcoming").length,
+      value: counts.upcoming,
       label: "Próximas",
       text: "En los próximos días"
     },
     {
       className: "primary",
       icon: "circle-check",
-      value: getDoneTasksFromList(petTasks).length,
+      value: counts.done,
       label: "Realizadas",
       text: "Buen trabajo"
     }
   ];
-}
-
-function getTaskSummaryVisualStatus(task) {
-  if (task.status !== "done" && getTaskTimestamp(task) < Date.now()) {
-    return {
-      key: "overdue",
-      label: "Vencida",
-      badgeClass: "badge-danger"
-    };
-  }
-
-  return getTaskVisualStatus(task);
 }
 
 function getPendingTasksForSelectedPet() {
@@ -658,20 +647,8 @@ function getPendingTasksForSelectedPet() {
   return getTasksByPetId(selectedPetId).filter((task) => task.status !== "done");
 }
 
-function getPriorityTaskForSelectedPet() {
-  const pendingTasks = getPendingTasksForSelectedPet();
-  const now = Date.now();
-  const overdueTasks = pendingTasks.filter((task) => getTaskTimestamp(task) < now);
-
-  if (overdueTasks.length > 0) {
-    return sortTasksByDateTime(overdueTasks)[0];
-  }
-
-  return sortTasksByDateTime(pendingTasks)[0] || null;
-}
-
 function renderSummaryTaskRow(task) {
-  const visualStatus = getTaskSummaryVisualStatus(task);
+  const visualStatus = getTaskVisualStatus(task);
 
   return `
     <article class="summary-task-row summary-task-row--${visualStatus.key}">
@@ -703,7 +680,7 @@ function renderSelectedPetSummary() {
   }
 
   const pet = getSelectedPet();
-  const priorityTask = getPriorityTaskForSelectedPet();
+  const [priorityTask, ...otherTasks] = sortTasksByDate(getPendingTasksForSelectedPet());
 
   if (!pet || !priorityTask) {
     selectedPetSummaryElement.innerHTML = `
@@ -718,11 +695,9 @@ function renderSelectedPetSummary() {
     return;
   }
 
-  const priorityStatus = getTaskSummaryVisualStatus(priorityTask);
-  const priorityLabel = priorityStatus.key === "overdue" ? "Tarea vencida" : "Próxima tarea";
-  const pendingTasks = sortTasksByDateTime(getPendingTasksForSelectedPet())
-    .filter((task) => task.id !== priorityTask.id)
-    .slice(0, 3);
+  const priorityStatus = getTaskVisualStatus(priorityTask);
+  const priorityLabel = "Cuidado prioritario";
+  const pendingTasks = otherTasks.slice(0, 3);
   const taskListContent =
     pendingTasks.length > 0
       ? pendingTasks.map((task) => renderSummaryTaskRow(task)).join("")
@@ -743,7 +718,7 @@ function renderSelectedPetSummary() {
 
       <section class="summary-task-list" aria-labelledby="summary-task-list-title">
         <div class="summary-task-list__header">
-          <h3 id="summary-task-list-title">Próximas tareas</h3>
+          <h3 id="summary-task-list-title">Otros cuidados pendientes</h3>
         </div>
         <div class="summary-task-list__items">
           ${taskListContent}

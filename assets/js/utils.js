@@ -415,54 +415,19 @@ function sortTasksByDate(tasks) {
   });
 }
 
-function getTaskTimestamp(task) {
-  if (!task.date) {
-    return Number.POSITIVE_INFINITY;
+function countTasksByVisualStatus(tasks) {
+  const counts = { overdue: 0, today: 0, upcoming: 0, done: 0, pending: 0 };
+
+  for (const task of tasks) {
+    counts[getTaskVisualStatus(task).key] += 1;
   }
 
-  const time = task.time || "23:59";
-  const timestamp = new Date(`${task.date}T${time}`).getTime();
-
-  return Number.isNaN(timestamp) ? Number.POSITIVE_INFINITY : timestamp;
-}
-
-function sortTasksByDateTime(tasks) {
-  return [...tasks].sort((a, b) => getTaskTimestamp(a) - getTaskTimestamp(b));
-}
-
-function getTasksByVisualStatus(tasks, statusKey) {
-  return filterTasksByVisualStatus(tasks, statusKey);
-}
-
-function getUpcomingTasksFromList(tasks, limit = 3) {
-  const upcomingTasks = tasks.filter((task) => {
-    const visualStatus = getTaskVisualStatus(task);
-    return visualStatus.key === "today" || visualStatus.key === "upcoming";
-  });
-
-  return sortTasksByDate(upcomingTasks).slice(0, limit);
-}
-
-function getOverdueTasksFromList(tasks) {
-  return tasks.filter((task) => getTaskVisualStatus(task).key === "overdue");
-}
-
-function getTodayTasksFromList(tasks) {
-  return tasks.filter((task) => getTaskVisualStatus(task).key === "today");
-}
-
-function getDoneTasksFromList(tasks) {
-  return tasks.filter((task) => getTaskVisualStatus(task).key === "done");
+  return counts;
 }
 
 /* =====================================================
    Mascotas
 ===================================================== */
-
-function getPetNameById(pets, petId) {
-  const pet = pets.find((item) => item.id === petId);
-  return pet ? pet.name : "Mascota no encontrada";
-}
 
 function getPetByIdFromList(pets, petId) {
   return pets.find((pet) => pet.id === petId) || null;
